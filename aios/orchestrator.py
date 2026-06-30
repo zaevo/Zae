@@ -38,6 +38,8 @@ def _try_import_advanced():
         ("specialization", ".specialization.tracker", "specialization_tracker"),
         ("epistemic", ".epistemic.state", "epistemic_machine"),
         ("adversarial_detect", ".adversarial_detect.detector", "adversarial_detector"),
+        # Bug Bounty
+        ("bounty", ".bounty.engine", "bounty_engine"),
     ]
     import importlib
     for key, module_path, attr in singletons:
@@ -77,7 +79,7 @@ class AIOS:
         for key in (
             "pattern_miner", "belief_network", "self_architect", "living_docs",
             "curiosity", "causal", "goals", "dream", "analogy",
-            "specialization", "epistemic", "adversarial_detect",
+            "specialization", "epistemic", "adversarial_detect", "bounty",
         ):
             mod = self._adv.get(key)
             if mod and hasattr(mod, "initialize"):
@@ -661,6 +663,120 @@ class AIOS:
                 )
             except Exception:
                 pass
+
+    # ── Bug Bounty Hunting ───────────────────────────────────────────────────
+
+    async def bounty_analyze(self, scope_text: str, program_name: str = "") -> str:
+        """
+        Analyze a bug bounty program's scope policy.
+        Returns attack surface map, testing priorities, and out-of-scope guardrails.
+        """
+        engine = self._adv.get("bounty")
+        if not engine:
+            return "Bug bounty engine not available."
+        try:
+            engine.initialize()
+            return await engine.analyze_program(scope_text, program_name)
+        except Exception as e:
+            return f"Scope analysis failed: {e}"
+
+    async def bounty_recon(self, target_domain: str, program: str = "", scope_context: str = "") -> str:
+        """
+        Generate a targeted recon plan for a domain in an authorized bug bounty program.
+        Returns phased recon commands and what to look for.
+        """
+        engine = self._adv.get("bounty")
+        if not engine:
+            return "Bug bounty engine not available."
+        try:
+            engine.initialize()
+            return await engine.plan_recon(target_domain, program, scope_context)
+        except Exception as e:
+            return f"Recon planning failed: {e}"
+
+    async def bounty_report(
+        self, finding_description: str, program: str = "", severity: str = ""
+    ) -> str:
+        """
+        Draft a professional bug bounty report from a description of your finding.
+        Returns a submission-ready report.
+        """
+        engine = self._adv.get("bounty")
+        if not engine:
+            return "Bug bounty engine not available."
+        try:
+            engine.initialize()
+            return await engine.draft_report(finding_description, program, severity)
+        except Exception as e:
+            return f"Report drafting failed: {e}"
+
+    async def bounty_triage(self, findings: list[str]) -> str:
+        """Triage and prioritize a list of potential bug bounty findings."""
+        engine = self._adv.get("bounty")
+        if not engine:
+            return "Bug bounty engine not available."
+        try:
+            engine.initialize()
+            return await engine.triage(findings)
+        except Exception as e:
+            return f"Triage failed: {e}"
+
+    def bounty_track(
+        self,
+        title: str,
+        severity: str,
+        program: str,
+        description: str = "",
+        status: str = "draft",
+    ) -> str:
+        """Track a bug bounty finding in the database."""
+        engine = self._adv.get("bounty")
+        if not engine:
+            return "Bug bounty engine not available."
+        try:
+            engine.initialize()
+            f = engine.track_finding(title, severity, program, description, status)
+            return f"Finding #{f.finding_id} tracked: [{f.severity}] {f.title} — {f.program}"
+        except Exception as e:
+            return f"Failed to track finding: {e}"
+
+    def bounty_update(
+        self, finding_id: int, status: str | None = None,
+        payout: float | None = None, notes: str | None = None,
+    ) -> str:
+        """Update an existing tracked finding's status or payout."""
+        engine = self._adv.get("bounty")
+        if not engine:
+            return "Bug bounty engine not available."
+        try:
+            engine.initialize()
+            engine.update_finding(finding_id, status=status, payout=payout, notes=notes)
+            return f"Finding #{finding_id} updated."
+        except Exception as e:
+            return f"Update failed: {e}"
+
+    def bounty_findings(self, program: str | None = None) -> str:
+        """Show all tracked bug bounty findings."""
+        engine = self._adv.get("bounty")
+        if not engine:
+            return "Bug bounty engine not available."
+        try:
+            engine.initialize()
+            findings = engine.get_findings(program=program)
+            return engine.format_findings_table(findings)
+        except Exception as e:
+            return f"Failed to retrieve findings: {e}"
+
+    def bounty_stats(self) -> dict:
+        """Return bug bounty hunting statistics."""
+        engine = self._adv.get("bounty")
+        if not engine:
+            return {}
+        try:
+            engine.initialize()
+            return engine.get_stats()
+        except Exception:
+            return {}
 
     @property
     def stats(self) -> dict:

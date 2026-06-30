@@ -28,8 +28,8 @@ BANNER = """
 ║      ███║  ██║  ██║███████╗                                  ║
 ║      ╚══╝  ╚═╝  ╚═╝╚══════╝                                 ║
 ║                                                               ║
-║   AI Operating System v3.0                                   ║
-║   22 novel capabilities — architecture beyond single models  ║
+║   AI Operating System v3.1                                   ║
+║   23 capabilities — including live bug bounty hunting        ║
 ║                                                               ║
 ╚═══════════════════════════════════════════════════════════════╝
 """
@@ -74,6 +74,17 @@ Advanced Intelligence Commands (Phase 3):
   /whoami                 Show your Theory of Mind profile
   /threats                Show adversarial input detection stats
   /services               Start all background services
+
+Bug Bounty Commands:
+  /scope <program>        Analyze a program's scope (paste scope after prompt)
+  /recon <domain>         Generate targeted recon plan for a domain
+  /report                 Draft a professional bug report (describe finding)
+  /triage                 Triage and prioritize your current findings list
+  /track <sev> <prog>     Track a finding (e.g. /track High HackerOne/Acme)
+  /update <id> <status>   Update finding status (submitted/valid/invalid/duplicate)
+  /payout <id> <amount>   Record a payout for a finding
+  /findings [program]     Show all tracked findings
+  /bstats                 Show bug bounty hunting statistics
 """
 
 AGENTS_LIST = """
@@ -444,6 +455,149 @@ async def run_interactive(aios) -> None:
                 print("  ✓ Curiosity investigation (every 10 min)")
                 print("  ✓ Dream consolidation (every 30 min)")
                 print("  ✓ Proactive project monitor (every 30 min)\n")
+
+            # ── Bug Bounty ────────────────────────────────────────────────────
+            elif cmd == "scope":
+                program_name = arg or ""
+                print(f"Paste the program's scope policy (end with '---' on its own line):\n")
+                lines = []
+                while True:
+                    try:
+                        line = input()
+                        if line.strip() == "---":
+                            break
+                        lines.append(line)
+                    except (EOFError, KeyboardInterrupt):
+                        break
+                scope_text = "\n".join(lines)
+                if scope_text.strip():
+                    print("\n[BOUNTY] Analyzing scope...\n")
+                    print(await aios.bounty_analyze(scope_text, program_name))
+                    print()
+                else:
+                    print("[ERROR] No scope text provided.\n")
+
+            elif cmd == "recon":
+                if not arg:
+                    print("[ERROR] Usage: /recon <target-domain>\n")
+                else:
+                    domain = arg.split()[0]
+                    print(f"\n[BOUNTY] Generating recon plan for {domain}...\n")
+                    print(await aios.bounty_recon(domain))
+                    print()
+
+            elif cmd == "report":
+                print("Describe the vulnerability you found (end with '---' on its own line):\n")
+                lines = []
+                while True:
+                    try:
+                        line = input()
+                        if line.strip() == "---":
+                            break
+                        lines.append(line)
+                    except (EOFError, KeyboardInterrupt):
+                        break
+                finding = "\n".join(lines)
+                if finding.strip():
+                    prog = input("Program name (or press Enter to skip): ").strip()
+                    sev = input("Your severity estimate (Critical/High/Medium/Low, or Enter): ").strip()
+                    print("\n[BOUNTY] Drafting professional report...\n")
+                    print(await aios.bounty_report(finding, program=prog, severity=sev))
+                    print()
+                else:
+                    print("[ERROR] No finding description provided.\n")
+
+            elif cmd == "triage":
+                print("Enter your findings one per line (end with '---'):\n")
+                lines = []
+                while True:
+                    try:
+                        line = input()
+                        if line.strip() == "---":
+                            break
+                        if line.strip():
+                            lines.append(line.strip())
+                    except (EOFError, KeyboardInterrupt):
+                        break
+                if lines:
+                    print(f"\n[BOUNTY] Triaging {len(lines)} findings...\n")
+                    print(await aios.bounty_triage(lines))
+                    print()
+                else:
+                    print("[ERROR] No findings provided.\n")
+
+            elif cmd == "track":
+                # /track <severity> <program>
+                tparts = arg.split(maxsplit=1) if arg else []
+                if len(tparts) < 2:
+                    print("[ERROR] Usage: /track <severity> <program>\n")
+                    print("  Example: /track High HackerOne/Acme\n")
+                else:
+                    severity = tparts[0]
+                    program = tparts[1]
+                    try:
+                        title = input("Finding title: ").strip()
+                        desc = input("Brief description (optional): ").strip()
+                    except (EOFError, KeyboardInterrupt):
+                        title, desc = "Untitled", ""
+                    print(aios.bounty_track(title, severity, program, description=desc))
+                    print()
+
+            elif cmd == "update":
+                # /update <id> <status>
+                uparts = arg.split(maxsplit=1) if arg else []
+                if len(uparts) < 2:
+                    print("[ERROR] Usage: /update <finding-id> <status>\n")
+                    print("  Statuses: draft | submitted | triaged | valid | invalid | duplicate\n")
+                else:
+                    try:
+                        fid = int(uparts[0])
+                        status = uparts[1]
+                        print(aios.bounty_update(fid, status=status))
+                        print()
+                    except ValueError:
+                        print("[ERROR] Finding ID must be a number.\n")
+
+            elif cmd == "payout":
+                # /payout <id> <amount>
+                pparts = arg.split(maxsplit=1) if arg else []
+                if len(pparts) < 2:
+                    print("[ERROR] Usage: /payout <finding-id> <amount>\n")
+                else:
+                    try:
+                        fid = int(pparts[0])
+                        amount = float(pparts[1].lstrip("$"))
+                        print(aios.bounty_update(fid, payout=amount, status="valid"))
+                        print(f"  Recorded ${amount:.2f} payout for finding #{fid}\n")
+                    except ValueError:
+                        print("[ERROR] Invalid ID or amount.\n")
+
+            elif cmd == "findings":
+                program_filter = arg if arg else None
+                label = f" [{program_filter}]" if program_filter else ""
+                print(f"\n[Bug Bounty Findings{label}]")
+                print(aios.bounty_findings(program=program_filter))
+                print()
+
+            elif cmd == "bstats":
+                stats = aios.bounty_stats()
+                if stats:
+                    print("\n[Bug Bounty Stats]")
+                    print(f"  Total findings:  {stats['total_findings']}")
+                    print(f"  Total earnings:  ${stats['total_payout']:.2f}")
+                    if stats["by_severity"]:
+                        print("  By severity:     " + " | ".join(
+                            f"{k}: {v}" for k, v in stats["by_severity"].items()
+                        ))
+                    if stats["by_status"]:
+                        print("  By status:       " + " | ".join(
+                            f"{k}: {v}" for k, v in stats["by_status"].items()
+                        ))
+                    if stats["programs_hunted"]:
+                        print(f"  Programs hunted: {', '.join(stats['programs_hunted'])}")
+                    print()
+                else:
+                    print("[BSTATS] No data yet. Start hunting!\n")
 
             else:
                 print(f"[AIOS] Unknown command: /{cmd}. Type /help.\n")
