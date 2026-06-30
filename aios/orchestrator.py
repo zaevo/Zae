@@ -16,53 +16,36 @@ from .workflow.engine import WorkflowEngine, WorkflowResult
 
 
 def _try_import_advanced():
-    """Lazily import Phase 2 advanced modules to avoid hard startup failures."""
+    """Lazily import all advanced modules to avoid hard startup failures."""
     m = {}
-    try:
-        from .temporal.engine import TemporalReasoningEngine
-        m["temporal"] = TemporalReasoningEngine
-    except Exception:
-        pass
-    try:
-        from .archaeology.tracer import DecisionArchaeologist
-        m["archaeology"] = DecisionArchaeologist
-    except Exception:
-        pass
-    try:
-        from .patterns.miner import pattern_miner
-        m["pattern_miner"] = pattern_miner
-    except Exception:
-        pass
-    try:
-        from .proactive.monitor import proactive_monitor
-        m["proactive_monitor"] = proactive_monitor
-    except Exception:
-        pass
-    try:
-        from .bayesian.network import belief_network
-        m["belief_network"] = belief_network
-    except Exception:
-        pass
-    try:
-        from .self_improvement.architect import self_architect
-        m["self_architect"] = self_architect
-    except Exception:
-        pass
-    try:
-        from .living_docs.documents import living_docs
-        m["living_docs"] = living_docs
-    except Exception:
-        pass
-    try:
-        from .cognitive.fingerprint import CognitiveFingerprintEngine
-        m["cognitive"] = CognitiveFingerprintEngine
-    except Exception:
-        pass
-    try:
-        from .bayesian.network import belief_network
-        m["belief_network"] = belief_network
-    except Exception:
-        pass
+    singletons = [
+        ("temporal", ".temporal.engine", "TemporalReasoningEngine"),
+        ("archaeology", ".archaeology.tracer", "DecisionArchaeologist"),
+        ("pattern_miner", ".patterns.miner", "pattern_miner"),
+        ("proactive_monitor", ".proactive.monitor", "proactive_monitor"),
+        ("belief_network", ".bayesian.network", "belief_network"),
+        ("self_architect", ".self_improvement.architect", "self_architect"),
+        ("living_docs", ".living_docs.documents", "living_docs"),
+        ("cognitive", ".cognitive.fingerprint", "CognitiveFingerprintEngine"),
+        # Phase 3
+        ("simulation", ".simulation.engine", "simulation_engine"),
+        ("tom", ".theory_of_mind.modeler", "tom_modeler"),
+        ("curiosity", ".curiosity.engine", "curiosity_engine"),
+        ("causal", ".causal.model", "causal_model"),
+        ("goals", ".goals.manager", "goal_manager"),
+        ("dream", ".dream.consolidator", "dream_consolidator"),
+        ("analogy", ".analogy.engine", "analogy_engine"),
+        ("specialization", ".specialization.tracker", "specialization_tracker"),
+        ("epistemic", ".epistemic.state", "epistemic_machine"),
+        ("adversarial_detect", ".adversarial_detect.detector", "adversarial_detector"),
+    ]
+    import importlib
+    for key, module_path, attr in singletons:
+        try:
+            mod = importlib.import_module(module_path, package=__name__.rsplit(".", 1)[0])
+            m[key] = getattr(mod, attr)
+        except Exception:
+            pass
     return m
 
 
@@ -91,7 +74,11 @@ class AIOS:
 
     def _init_advanced_modules(self) -> None:
         """Initialize SQLite-backed modules on startup."""
-        for key in ("pattern_miner", "belief_network", "self_architect", "living_docs"):
+        for key in (
+            "pattern_miner", "belief_network", "self_architect", "living_docs",
+            "curiosity", "causal", "goals", "dream", "analogy",
+            "specialization", "epistemic", "adversarial_detect",
+        ):
             mod = self._adv.get(key)
             if mod and hasattr(mod, "initialize"):
                 try:
@@ -383,6 +370,298 @@ class AIOS:
         except Exception as e:
             return f"Failed to create living doc: {e}"
 
+    # ── Phase 3 Advanced Capabilities ────────────────────────────────────────
+
+    async def find_analogies(self, problem: str, source_domain: str = "general") -> str:
+        """
+        Find structural analogies between this problem and other domains.
+        Returns the best analogy + a transferred solution approach.
+        """
+        engine = self._adv.get("analogy")
+        if not engine:
+            return "Analogical leap engine not available."
+        try:
+            engine.initialize()
+            result = await engine.find_analogies(problem, source_domain=source_domain)
+            return engine.format_analogy_result(result)
+        except Exception as e:
+            return f"Analogy search failed: {e}"
+
+    async def simulate(self, task: str) -> str:
+        """
+        Run mental simulation on a task: generate N approaches, simulate outcomes,
+        return which path is most likely to succeed and why.
+        """
+        sim = self._adv.get("simulation")
+        if not sim:
+            return "Mental simulation engine not available."
+        try:
+            sim.initialize()
+            result = await sim.simulate(task, context=memory.retrieve_context_for_task(
+                task, self.session_id, self.project_id
+            ))
+            lines = [
+                f"Simulated {len(result.paths)} approaches.",
+                f"Best path: {result.selected_path.approach_name} (confidence: {result.overall_confidence:.0%})",
+                f"Description: {result.selected_path.approach_description}",
+            ]
+            if result.execution_guidance:
+                lines.append(f"Execution guidance: {result.execution_guidance}")
+            if result.merged_risks:
+                lines.append("Watch for: " + "; ".join(result.merged_risks[:3]))
+            return "\n".join(lines)
+        except Exception as e:
+            return f"Simulation failed: {e}"
+
+    async def dream(self) -> str:
+        """
+        Run one dream/consolidation cycle: synthesize recent memories,
+        find non-obvious connections, generate new hypotheses.
+        Returns a summary of insights generated.
+        """
+        dreamer = self._adv.get("dream")
+        if not dreamer:
+            return "Dream consolidator not available."
+        try:
+            dreamer.initialize()
+            result = await dreamer.dream()
+            if not result.insights_generated:
+                return f"Dream cycle complete. Processed {result.memories_processed} memories. No new insights generated (need more memories)."
+            lines = [
+                f"Dream cycle: {result.memories_processed} memories → {len(result.insights_generated)} insights in {result.duration_seconds:.1f}s",
+                "",
+            ]
+            for i, ins in enumerate(result.insights_generated[:5], 1):
+                lines.append(f"{i}. [{ins.insight_type}] {ins.insight}")
+                if ins.actionable and ins.action_hint:
+                    lines.append(f"   → {ins.action_hint}")
+            if result.hypotheses:
+                lines.append(f"\nGenerated {len(result.hypotheses)} hypotheses:")
+                for h in result.hypotheses[:3]:
+                    lines.append(f"  • {h.get('hypothesis', '')}")
+            return "\n".join(lines)
+        except Exception as e:
+            return f"Dream cycle failed: {e}"
+
+    def get_user_model(self) -> str:
+        """Return the current Theory of Mind model of the user."""
+        tom = self._adv.get("tom")
+        if not tom:
+            return "Theory of Mind module not available."
+        try:
+            tom.initialize()
+            return tom.summarize_model()
+        except Exception as e:
+            return f"User model unavailable: {e}"
+
+    def get_open_questions(self) -> list[dict]:
+        """Return the curiosity engine's open knowledge gaps."""
+        curiosity = self._adv.get("curiosity")
+        if not curiosity:
+            return []
+        try:
+            curiosity.initialize()
+            gaps = curiosity.get_open_gaps(limit=10)
+            return [{"question": g.question, "priority": g.priority, "domain": g.domain} for g in gaps]
+        except Exception:
+            return []
+
+    async def investigate_gap(self) -> str:
+        """Have the curiosity engine autonomously investigate its top open question."""
+        curiosity = self._adv.get("curiosity")
+        if not curiosity:
+            return "Curiosity engine not available."
+        try:
+            curiosity.initialize()
+            gap = await curiosity.investigate_next()
+            if not gap:
+                return "No open knowledge gaps to investigate."
+            return f"Investigated: {gap.question}\n\nAnswer:\n{gap.answer}"
+        except Exception as e:
+            return f"Investigation failed: {e}"
+
+    async def causal_query(
+        self, intervention: str, value: str, target: str
+    ) -> str:
+        """
+        Causal intervention query: 'If I SET <intervention> to <value>, what happens to <target>?'
+        Uses do-calculus to separate correlation from causation.
+        """
+        causal = self._adv.get("causal")
+        if not causal:
+            return "Causal world model not available."
+        try:
+            causal.initialize()
+            result = await causal.do_query(intervention, value, target)
+            return (
+                f"do({intervention}={value}) → {target}\n"
+                f"Predicted effect: {result.predicted_effect}\n"
+                f"Direction: {result.direction} | Magnitude: {result.magnitude} | Confidence: {result.confidence:.0%}\n"
+                f"Path: {' → '.join(result.causal_path) if result.causal_path else 'Direct'}\n"
+                f"Reasoning: {result.reasoning}"
+            )
+        except Exception as e:
+            return f"Causal query failed: {e}"
+
+    def add_goal(
+        self, title: str, description: str = "",
+        horizon: str = "tactical", priority: float = 5.0
+    ) -> str:
+        """Add a goal to the hierarchy (horizon: immediate|tactical|strategic|visionary)."""
+        goals = self._adv.get("goals")
+        if not goals:
+            return "Goal manager not available."
+        try:
+            goals.initialize()
+            goal_id = goals.add_goal(
+                title=title, description=description,
+                horizon=horizon, priority=priority, project_id=self.project_id
+            )
+            return f"Goal #{goal_id} added: '{title}' [{horizon}]"
+        except Exception as e:
+            return f"Failed to add goal: {e}"
+
+    def get_goals(self) -> str:
+        """Show the current goal hierarchy."""
+        goals = self._adv.get("goals")
+        if not goals:
+            return "Goal manager not available."
+        try:
+            goals.initialize()
+            return goals.format_goal_tree(project_id=self.project_id)
+        except Exception as e:
+            return f"Failed to fetch goals: {e}"
+
+    async def reprioritize_goals(self) -> str:
+        """Let AI reprioritize the goal tree based on recent activity."""
+        goals = self._adv.get("goals")
+        if not goals:
+            return "Goal manager not available."
+        try:
+            goals.initialize()
+            result = await goals.reprioritize(project_id=self.project_id)
+            if not result:
+                return "Need at least 2 goals to reprioritize."
+            changes = result.get("priority_changes", [])
+            insight = result.get("insight", "")
+            lines = [f"Reprioritization complete. {len(changes)} changes."]
+            for c in changes[:5]:
+                lines.append(f"  Goal #{c['goal_id']}: new priority={c['new_priority']} — {c['reason']}")
+            if insight:
+                lines.append(f"\nStrategic insight: {insight}")
+            return "\n".join(lines)
+        except Exception as e:
+            return f"Reprioritization failed: {e}"
+
+    def get_epistemic_map(self, domain: str | None = None) -> str:
+        """Show the structured knowledge map: what we know vs believe vs suspect vs don't know."""
+        epistemic = self._adv.get("epistemic")
+        if not epistemic:
+            return "Epistemic state machine not available."
+        try:
+            epistemic.initialize()
+            return epistemic.format_knowledge_map(domain=domain)
+        except Exception as e:
+            return f"Failed to get epistemic map: {e}"
+
+    async def find_blind_spots(self, domain: str) -> str:
+        """Find unknown unknowns — things we don't know we don't know — in a domain."""
+        epistemic = self._adv.get("epistemic")
+        if not epistemic:
+            return "Epistemic state machine not available."
+        try:
+            epistemic.initialize()
+            spots = await epistemic.find_blind_spots(domain)
+            if not spots:
+                return f"No blind spots found in '{domain}'."
+            lines = [f"Found {len(spots)} blind spots in '{domain}':"]
+            for i, s in enumerate(spots, 1):
+                lines.append(f"\n{i}. {s.blind_spot}")
+                lines.append(f"   Why it matters: {s.why_matters}")
+                lines.append(f"   How to explore: {s.investigation_hint}")
+            return "\n".join(lines)
+        except Exception as e:
+            return f"Blind spot analysis failed: {e}"
+
+    def get_agent_leaderboard(self) -> str:
+        """Show which agents are best at which task categories (based on real track records)."""
+        spec = self._adv.get("specialization")
+        if not spec:
+            return "Specialization tracker not available."
+        try:
+            spec.initialize()
+            return spec.format_leaderboard()
+        except Exception as e:
+            return f"Failed to get leaderboard: {e}"
+
+    def get_dream_insights(self) -> list[dict]:
+        """Return recent insights generated during dream/consolidation cycles."""
+        dreamer = self._adv.get("dream")
+        if not dreamer:
+            return []
+        try:
+            dreamer.initialize()
+            return dreamer.get_recent_insights(limit=10)
+        except Exception:
+            return []
+
+    def get_hypotheses(self) -> list[dict]:
+        """Return hypotheses generated during dream cycles."""
+        dreamer = self._adv.get("dream")
+        if not dreamer:
+            return []
+        try:
+            dreamer.initialize()
+            return dreamer.get_hypotheses()
+        except Exception:
+            return []
+
+    def get_threat_stats(self) -> dict:
+        """Return adversarial input detection statistics."""
+        detector = self._adv.get("adversarial_detect")
+        if not detector:
+            return {}
+        try:
+            detector.initialize()
+            return detector.get_detection_stats()
+        except Exception:
+            return {}
+
+    async def start_background_services(self) -> None:
+        """Start all background services: curiosity investigation, dream loop, proactive monitor."""
+        # Curiosity background investigation
+        curiosity = self._adv.get("curiosity")
+        if curiosity:
+            try:
+                curiosity.initialize()
+                asyncio.create_task(curiosity.start_background_investigation(interval_seconds=600))
+            except Exception:
+                pass
+
+        # Dream consolidation loop
+        dreamer = self._adv.get("dream")
+        if dreamer:
+            try:
+                dreamer.initialize()
+                asyncio.create_task(dreamer.start_dream_loop(idle_after_seconds=1800))
+            except Exception:
+                pass
+
+        # Proactive project monitor
+        monitor = self._adv.get("proactive_monitor")
+        if monitor:
+            try:
+                monitor.initialize()
+                asyncio.create_task(
+                    monitor.start_background_monitoring(
+                        interval_seconds=1800,
+                        project_ids=[self.project_id] if self.project_id else None,
+                        session_id=self.session_id,
+                    )
+                )
+            except Exception:
+                pass
+
     @property
     def stats(self) -> dict:
         return {
@@ -393,5 +672,6 @@ class AIOS:
                 (datetime.utcnow() - self._started_at).total_seconds() / 60, 1
             ),
             "version": self.VERSION,
-            "advanced_modules": list(self._adv.keys()),
+            "active_modules": len(self._adv),
+            "module_names": sorted(self._adv.keys()),
         }
