@@ -9,6 +9,7 @@ from dataclasses import dataclass, field
 from typing import Any
 
 from .agent import SecurityAgent, VulnerabilityResearcher
+from ..agents.base import AgentResult
 from ..intelligence.reasoning import extract_confidence
 
 
