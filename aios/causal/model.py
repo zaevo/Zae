@@ -202,7 +202,7 @@ class CausalWorldModel:
         """Extract causal relationships from any text and store them."""
         import anthropic
 
-        client = anthropic.Anthropic(api_key=config.anthropic_api_key)
+        client = anthropic.Anthropic(api_key=config.api_key)
         try:
             response = client.messages.create(
                 model=config.fast_model,
@@ -275,7 +275,7 @@ class CausalWorldModel:
         import anthropic
 
         graph = self._get_graph_summary()
-        client = anthropic.Anthropic(api_key=config.anthropic_api_key)
+        client = anthropic.Anthropic(api_key=config.api_key)
 
         response = client.messages.create(
             model=config.worker_model,
@@ -325,7 +325,7 @@ class CausalWorldModel:
         import anthropic
 
         graph = self._get_graph_summary()
-        client = anthropic.Anthropic(api_key=config.anthropic_api_key)
+        client = anthropic.Anthropic(api_key=config.api_key)
 
         response = client.messages.create(
             model=config.worker_model,

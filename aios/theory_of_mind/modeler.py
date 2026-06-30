@@ -123,7 +123,7 @@ class TheoryOfMindModeler:
         """Observe an interaction and update the user model."""
         import anthropic
 
-        client = anthropic.Anthropic(api_key=config.anthropic_api_key)
+        client = anthropic.Anthropic(api_key=config.api_key)
         try:
             obs_response = client.messages.create(
                 model=config.fast_model,
@@ -264,7 +264,7 @@ class TheoryOfMindModeler:
         }, indent=2)
 
         try:
-            client = anthropic.Anthropic(api_key=config.anthropic_api_key)
+            client = anthropic.Anthropic(api_key=config.api_key)
             cal_response = client.messages.create(
                 model=config.fast_model,
                 max_tokens=len(draft.split()) * 2 + 200,

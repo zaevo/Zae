@@ -177,7 +177,7 @@ class SpecializationTracker:
         """Classify a task into a category using AI."""
         import anthropic
 
-        client = anthropic.Anthropic(api_key=config.anthropic_api_key)
+        client = anthropic.Anthropic(api_key=config.api_key)
         try:
             response = client.messages.create(
                 model=config.fast_model,
@@ -227,7 +227,7 @@ class SpecializationTracker:
 
         # If we have enough data, use AI to recommend
         if len([r for r in track_records if r["win_rate"] != "no data"]) >= 2:
-            client = anthropic.Anthropic(api_key=config.anthropic_api_key)
+            client = anthropic.Anthropic(api_key=config.api_key)
             try:
                 response = client.messages.create(
                     model=config.fast_model,

@@ -103,7 +103,7 @@ class CuriosityEngine:
         """Extract knowledge gaps from a task/response pair and store them."""
         import anthropic
 
-        client = anthropic.Anthropic(api_key=config.anthropic_api_key)
+        client = anthropic.Anthropic(api_key=config.api_key)
         try:
             gap_response = client.messages.create(
                 model=config.fast_model,
@@ -167,7 +167,7 @@ class CuriosityEngine:
 
         gap_id, question, why_matters, priority, domain, hint, source_task = row
 
-        client = anthropic.Anthropic(api_key=config.anthropic_api_key)
+        client = anthropic.Anthropic(api_key=config.api_key)
         try:
             inv_response = client.messages.create(
                 model=config.worker_model,

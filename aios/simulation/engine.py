@@ -116,7 +116,7 @@ class MentalSimulationEngine:
         import uuid
 
         n = n_paths or self.N_PATHS
-        client = anthropic.Anthropic(api_key=config.anthropic_api_key)
+        client = anthropic.Anthropic(api_key=config.api_key)
 
         # Step 1: Generate N simulated paths
         sim_prompt = SIMULATION_PROMPT.format(

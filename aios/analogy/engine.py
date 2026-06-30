@@ -145,7 +145,7 @@ class AnalogicalLeapEngine:
         domains = target_domains or self.DEFAULT_TARGET_DOMAINS[:n_domains]
         domains_str = "\n".join(f"  - {d}" for d in domains)
 
-        client = anthropic.Anthropic(api_key=config.anthropic_api_key)
+        client = anthropic.Anthropic(api_key=config.api_key)
 
         try:
             response = client.messages.create(
@@ -220,7 +220,7 @@ class AnalogicalLeapEngine:
         """Generate a full solution by transferring approaches from the analogous domain."""
         import anthropic
 
-        client = anthropic.Anthropic(api_key=config.anthropic_api_key)
+        client = anthropic.Anthropic(api_key=config.api_key)
         try:
             response = client.messages.create(
                 model=config.worker_model,

@@ -225,7 +225,7 @@ class DreamConsolidator:
                 duration_seconds=0
             )
 
-        client = anthropic.Anthropic(api_key=config.anthropic_api_key)
+        client = anthropic.Anthropic(api_key=config.api_key)
         insights: list[DreamInsight] = []
         hypotheses: list[dict] = []
         pruned_count = 0

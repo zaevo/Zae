@@ -185,7 +185,7 @@ class AdversarialDetector:
                 overall_confidence=0.90,
             )
 
-        client = anthropic.Anthropic(api_key=config.anthropic_api_key)
+        client = anthropic.Anthropic(api_key=config.api_key)
         try:
             response = client.messages.create(
                 model=config.fast_model,
@@ -269,7 +269,7 @@ class AdversarialDetector:
         import anthropic
 
         mem_list = [{"index": i, "content": m[:200]} for i, m in enumerate(memories)]
-        client = anthropic.Anthropic(api_key=config.anthropic_api_key)
+        client = anthropic.Anthropic(api_key=config.api_key)
         try:
             response = client.messages.create(
                 model=config.fast_model,

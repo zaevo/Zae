@@ -209,7 +209,7 @@ class GoalHierarchyManager:
             "horizon": g.horizon, "priority": g.priority
         } for g in goals], indent=2)
 
-        client = anthropic.Anthropic(api_key=config.anthropic_api_key)
+        client = anthropic.Anthropic(api_key=config.api_key)
         try:
             response = client.messages.create(
                 model=config.fast_model,
@@ -275,7 +275,7 @@ class GoalHierarchyManager:
             for title, task, q in recent
         ) or "No recent tasks."
 
-        client = anthropic.Anthropic(api_key=config.anthropic_api_key)
+        client = anthropic.Anthropic(api_key=config.api_key)
         try:
             response = client.messages.create(
                 model=config.worker_model,
@@ -321,7 +321,7 @@ class GoalHierarchyManager:
             for t in tasks
         ) or "No tasks linked yet."
 
-        client = anthropic.Anthropic(api_key=config.anthropic_api_key)
+        client = anthropic.Anthropic(api_key=config.api_key)
         try:
             response = client.messages.create(
                 model=config.fast_model,

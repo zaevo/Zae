@@ -149,7 +149,7 @@ class EpistemicStateMachine:
         """Assess epistemic status of claims in a piece of content."""
         import anthropic
 
-        client = anthropic.Anthropic(api_key=config.anthropic_api_key)
+        client = anthropic.Anthropic(api_key=config.api_key)
         try:
             response = client.messages.create(
                 model=config.fast_model,
@@ -222,7 +222,7 @@ class EpistemicStateMachine:
         except Exception:
             current_knowledge = "No prior knowledge recorded."
 
-        client = anthropic.Anthropic(api_key=config.anthropic_api_key)
+        client = anthropic.Anthropic(api_key=config.api_key)
         try:
             response = client.messages.create(
                 model=config.worker_model,
