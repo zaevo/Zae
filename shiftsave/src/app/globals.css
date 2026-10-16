@@ -1,0 +1,75 @@
+@import "tailwindcss";
+
+/*
+ * Design tokens — a clean, minimalist fintech look: near-black canvas in
+ * dark mode, soft grey canvas in light mode, white/graphite cards with large
+ * radii, one indigo→violet accent. Use the semantic utilities below
+ * (bg-canvas, bg-surface, text-ink, text-muted, border-line, bg-accent …)
+ * rather than raw palette colors so both themes stay consistent.
+ */
+@theme {
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Inter, Roboto, sans-serif;
+
+  --color-canvas: #f4f5f7;
+  --color-surface: #ffffff;
+  --color-surface-2: #eef0f4;
+  --color-ink: #0b0d12;
+  --color-muted: #667085;
+  --color-line: #e3e6ec;
+  --color-accent: #4f46e5;
+  --color-accent-2: #7c3aed;
+  --color-accent-ink: #ffffff;
+  --color-positive: #059669;
+  --color-warning: #d97706;
+  --color-danger: #dc2626;
+
+  --radius-card: 1.5rem;
+
+  --animate-page-in: page-in 220ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  --animate-sheet-up: sheet-up 260ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+
+  @keyframes page-in {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes sheet-up {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-canvas: #07080b;
+    --color-surface: #13151b;
+    --color-surface-2: #1c1f27;
+    --color-ink: #f5f6f8;
+    --color-muted: #9aa3b2;
+    --color-line: #262a33;
+    --color-accent: #6366f1;
+    --color-accent-2: #8b5cf6;
+    --color-positive: #34d399;
+    --color-warning: #fbbf24;
+    --color-danger: #f87171;
+  }
+}
+
+html,
+body {
+  background: var(--color-canvas);
+  color: var(--color-ink);
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: "tnum" 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    transition-duration: 1ms !important;
+  }
+}
