@@ -46,6 +46,8 @@ These come from a review of the briefs. They are design requirements, not sugges
 - **Auth:** `getSessionUser()` / `requireRole(...roles)` from `@/lib/auth`. Wrap route handlers with `handle()` from `@/lib/http`; validate bodies with `zod`.
 - **Money:** integer cents everywhere (`*_cents` columns, `*Cents` fields). Format with `formatCents` from `@/lib/money`. All rates/fees come from `@/lib/pricing` — never hard-code a dollar figure.
 - **UI kit** (`@/components/ui/*`): `Card`, `CardTitle`, `Button`, `ButtonLink`, `ActionCircle`, `Badge`, `StatTile`, `PageHeader`, `EmptyState`, `cn`. Semantic colors only: `bg-canvas`, `bg-surface`, `bg-surface-2`, `text-ink`, `text-muted`, `border-line`, `bg-accent`/`text-accent`, `from-accent to-accent-2`, `text-positive|warning|danger`. Icons: `lucide-react`. Mobile-first: works at 375px wide, no horizontal scroll; the shell adds bottom padding for the tab bar. Modals = bottom sheets on mobile (`animate-sheet-up`).
+- **Demo state:** demo-mode actions (claim a shift, create a card, sign the MSA …) may mutate state so the UI reflects them during a session. Keep that state in `demoStore(key, init)` from `@/lib/demo/store` (globalThis-backed), never in plain module variables. The Legal builder owns `src/lib/demo/msa.ts` exporting `getDemoMsaSignature(): { signerName: string; signedAt: string; version: string } | null` and `setDemoMsaSignature(sig)`; demo starts **unsigned** so the signing flow is visible; C-BE's `hasSignedMsa` uses it in demo mode.
+- Do **not** run `next build` (other builders are writing files concurrently and it writes `.next/`); use `npx tsc --noEmit` and `npx vitest run <your test files>`. Type errors in files you do not own may be other builders' work in progress — ignore those, fix yours.
 - Server Components by default; `"use client"` only for interactive leaves.
 - Shared domain types: `@/lib/types` (read-only for builders). Module-local types live in your own files.
 - Tests: vitest, files `src/**/*.test.ts`. Pure logic (parsers, formatters, pricing, state machines) must have tests.
@@ -128,7 +130,7 @@ Realtime: add `shifts` and `chat_messages` to the `supabase_realtime` publicatio
 | **B (Wallet)** | `src/lib/wallet/**`, `src/lib/integrations/issuing.ts`, `src/lib/demo/wallet.ts`, `src/app/wallet/**`, `src/app/api/wallet/**`, `src/components/wallet/**` |
 | **C-BE (Shifts backend)** | `src/lib/shifts/**` (incl. `antiPoach.ts`, `dispatch.ts`, tests), `src/lib/integrations/{twilio,stripe,checkr}.ts`, `src/lib/demo/shifts.ts`, `src/app/api/{shifts,twilio,chat,admin,stripe}/**` |
 | **C-UI (Shifts UI)** | `src/app/shifts/**`, `src/app/business/**` **except** `src/app/business/msa/**`, `src/app/admin/page.tsx` + `src/app/admin/(components)` if needed, `src/components/shifts/**`, `src/components/admin/**`, `src/components/chat/**` |
-| **Legal** | `src/content/**`, `src/components/legal/**`, `src/app/business/msa/**`, `src/app/api/msa/**`, `docs/COMPLIANCE.md`, `docs/legal/**` |
+| **Legal** | `src/content/**`, `src/lib/demo/msa.ts`, `src/components/legal/**`, `src/app/business/msa/**`, `src/app/api/msa/**`, `docs/COMPLIANCE.md`, `docs/legal/**` |
 | **D (Leads)** | `scraper/**`, `src/app/admin/leads/**`, `src/app/api/leads/**`, `src/lib/demo/leads.ts` |
 
 Shared, already written, read-only: `src/lib/{types,pricing,money,env,auth,http}.ts`, `src/lib/supabase/*`, `src/components/ui/*`, `src/components/shell/*`, `src/app/{layout,template,page}.tsx`, `src/proxy.ts`, `src/app/globals.css`.
@@ -140,8 +142,13 @@ C-UI and Legal code against these before they exist — implement them exactly.
 ```ts
 // src/lib/shifts/antiPoach.ts  (C-BE)
 export interface PoachMatch { ruleId: string; label: string; excerpt: string; severity: PoachSeverity }
-export interface PoachScanResult { flagged: boolean; severity: PoachSeverity | null; matches: PoachMatch[] }
+export interface PoachScanResult { flagged: boolean; severity: PoachSeverity | null; matches: PoachMatch[]; redactedText: string }
+// redactedText = the message with phone numbers / emails / payment & social handles replaced by "[contact info hidden]".
+// The chat API stores and delivers redactedText (that is the "block"); phrase-only matches are delivered as-is but flagged.
 export function scanMessage(text: string): PoachScanResult;
+
+// src/lib/integrations/stripe.ts (C-BE) — shared Stripe client (B's issuing.ts imports it)
+export function getStripe(): Stripe; // throws a clear error when STRIPE_SECRET_KEY is missing
 
 // src/lib/demo/shifts.ts  (C-BE) — demo fixtures used by C-UI pages
 export const demoShifts: Shift[];
