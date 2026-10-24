@@ -202,3 +202,29 @@ export const CONSENTS: Record<"fcra_disclosure" | "drug_screen" | "sms" | "autop
 // src/lib/wallet/queries.ts (B) — used by A for the autopay toggle display
 export async function getWalletSummary(user: SessionUser): Promise<{ wallet: Wallet; autopayActive: boolean }>;
 ```
+
+## 8. Product decisions added after the first build (supersede earlier sections where they conflict)
+
+### 8.1 Credit builder plans (Kikoff-style tiers) — replaces the single $5 / $500 plan
+
+| Plan | Price | Store credit line | Includes |
+|---|---|---|---|
+| Starter | $5/mo | $750 | Bureau reporting, credit lessons, streaks/badges, referrals |
+| Plus | $20/mo | $2,500 | Starter + rent & utility reporting, AI bill negotiator, score tracking |
+| Max | $35/mo | $3,500 | Plus + identity theft protection (via a licensed insurer partner), AI money coach |
+
+- All plans: 0% APR, no interest, no late fees, no annual fee; cancel in ≤2 taps; tell members that closing the line can affect their score.
+- The membership pays for real services (reporting, education, tools). It must not be structured as a fee for extending credit (TILA finance charge / state usury / Military Lending Act 36% MAPR risk) — counsel to confirm before launch.
+- Upgrade prompts at milestones (e.g. 3 on-time months → "Upgrade to Plus for a $2,500 line"). Limits are real and spendable in the store, so the reported limit is accurate.
+- Extra revenue (all disclosed): affiliate card/loan offers at 660+ (ranked by fit, commission disclosed); success-fee bill negotiation for Starter members (charged only on realized savings); wallet card interchange share; optional instant-payout fee for shift workers (next-day stays free); referrals = 1 free month.
+- No credit-repair wording or promised score gains; any published average-score claims must be substantiated with "results vary". Annual prepaid plans only after counsel review (CROA). Never sell member financial data (GLBA/state privacy).
+- Code impact when resuming: replace `CREDIT.defaultLimitCents/membershipFeeCents/levelUpLimitCents` in `src/lib/pricing.ts` with a `CREDIT_PLANS` table; add `plan` to `membership_subscriptions` and per-plan limit to `virtual_credit_lines` (new migration); update `platform_config` seed, `src/lib/credit/engine.ts`, credit UI (plan picker, upgrade prompts, rewards page) and demo data.
+
+### 8.2 Phase 2 — Secured credit-builder card (Kikoff/Chime-style)
+
+- A real secured credit card issued by a sponsor bank through a card-issuing partner; virtual card available instantly in the app, physical card optional. Only Plus and Max members.
+- The member moves money (from the EzWerkz Wallet — e.g. shift pay — or a linked bank) into a secured balance held at the bank; spending is capped at that balance; the statement auto-pays from it; the bank/partner reports it to all three bureaus as a credit card. EzWerkz lends nothing and carries no credit risk.
+- Never report a debit/prepaid card as credit. Card agreement with Reg Z disclosures (Schumer box), CARD Act ability-to-pay check, KYC/CIP, FCRA disputes, Reg E for the wallet side.
+- Reporting setup: until EzWerkz meets bureau minimums (~100–500 accounts) and holds its own subscriber codes (Experian, TransUnion, Equifax — separate applications, e-OSCAR, possible on-site inspection), report through the bank or a furnishing partner.
+- Code impact: Module B's `IssuingProvider` gets a `createSecuredCreditCard` path and a `secured_balances` ledger; new `secured_card_accounts` + `secured_card_statements` tables; credit UI shows the card on `/credit` for Plus/Max with "Move money in" from the Wallet.
+- Rough budget (estimates, get partner quotes): store line via furnishing partner ≈ $2k–$15k to start + ~$1–2/member/mo; secured card program ≈ $50k–$250k year one, 6–12 months to launch.
