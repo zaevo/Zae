@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BreachCheck // local breach lookup</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+  <div class="scanlines"></div>
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo">&#9608;&#9608;</span>
+      <span class="title">BREACH<span class="accent">CHECK</span></span>
+      <span class="ver">v1.0 // local</span>
+    </div>
+    <nav>
+      <button id="tab-search" class="navbtn active">SEARCH</button>
+      <button id="tab-settings" class="navbtn">SETTINGS</button>
+    </nav>
+  </header>
+
+  <div class="auth-banner">
+    AUTHORIZED USE ONLY &mdash; this tool queries official LeakCheck &amp; HIBP APIs with
+    <strong>your own keys</strong>. Keys and results never leave this machine except to those APIs.
+  </div>
+
+  <main>
+    <!-- ================= SEARCH VIEW ================= -->
+    <section id="view-search" class="view">
+      <div class="status-strip">
+        <span class="chip" id="chip-lc">LeakCheck: <b>?</b></span>
+        <span class="chip" id="chip-hibp">HIBP: <b>?</b></span>
+      </div>
+
+      <form id="search-form" class="panel">
+        <div class="row">
+          <label>TYPE</label>
+          <select id="search-type">
+            <option value="auto">Auto / Reverse (detect)</option>
+            <option value="email">Email</option>
+            <option value="username">Username</option>
+            <option value="phone">Phone number</option>
+            <option value="keyword">Name / keyword</option>
+            <option value="hash">Hash</option>
+            <option value="password">Password (HIBP k-anon)</option>
+          </select>
+        </div>
+        <div class="row">
+          <label>QUERY</label>
+          <input id="search-query" type="text" autocomplete="off" spellcheck="false"
+                 placeholder="target@example.com / 15551234567 / john doe / hash..." />
+        </div>
+        <div class="row inline">
+          <label class="muted" id="limit-wrap">LIMIT
+            <input id="search-limit" type="number" min="1" max="1000" value="100" />
+          </label>
+          <label class="muted" id="hibp-also-wrap">
+            <input id="hibp-also" type="checkbox" checked /> also query HIBP (email)
+          </label>
+        </div>
+        <div class="row">
+          <button type="submit" id="run-btn" class="primary">&gt; RUN QUERY</button>
+        </div>
+        <p class="hint" id="type-hint"></p>
+      </form>
+
+      <div id="loading" class="loading hidden">
+        <span class="blink">&gt;&gt;&gt;</span> querying... <span class="spin"></span>
+      </div>
+      <div id="error" class="error hidden"></div>
+
+      <section id="results"></section>
+
+      <section class="history-wrap">
+        <div class="history-head">
+          <span>RECENT (local only)</span>
+          <button id="clear-history" class="link">clear</button>
+        </div>
+        <ul id="history"></ul>
+      </section>
+    </section>
+
+    <!-- ================= SETTINGS VIEW ================= -->
+    <section id="view-settings" class="view hidden">
+      <form id="settings-form" class="panel">
+        <h2>API KEYS</h2>
+        <p class="hint">
+          Stored in memory for this session. Tick "persist" to also save them to a
+          local <code>.env</code> (gitignored, chmod 600). Nothing is sent anywhere
+          except LeakCheck / HIBP.
+        </p>
+        <div class="row">
+          <label>LEAKCHECK PRO KEY</label>
+          <input id="key-lc" type="password" autocomplete="off" placeholder="40+ character key" />
+        </div>
+        <div class="row">
+          <label>HIBP KEY <span class="muted">(optional)</span></label>
+          <input id="key-hibp" type="password" autocomplete="off" placeholder="hibp api key" />
+        </div>
+        <div class="row inline">
+          <label class="muted"><input id="persist" type="checkbox" /> persist to local .env</label>
+          <button type="button" id="toggle-reveal" class="link">reveal</button>
+        </div>
+        <div class="row">
+          <button type="submit" class="primary">&gt; SAVE</button>
+          <button type="button" id="clear-keys" class="danger">WIPE KEYS</button>
+        </div>
+        <div id="settings-msg" class="hint"></div>
+      </form>
+    </section>
+  </main>
+
+  <footer>runs on 127.0.0.1 &middot; no telemetry &middot; no phone-home</footer>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
