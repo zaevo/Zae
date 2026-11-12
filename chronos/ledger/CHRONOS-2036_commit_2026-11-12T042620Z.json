@@ -1,0 +1,32 @@
+{
+  "experiment": "CHRONOS-2036",
+  "target_utc": "2036-11-11T00:00:00Z",
+  "message_rule": "CHRONOS-2036-{int(NIST outputValue,16) % 100000:05d} for pulse at target_utc; fallback: int(drand quicknet randomness,16) % 100000 at round below",
+  "drand_fallback_round": 139057012,
+  "receiver_mechanism": "P-CTC receiver (Cirq, Willow-like noise)",
+  "received_message": "CHRONOS-2036-23948",
+  "received_bits": [
+    0,
+    0,
+    1,
+    1,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1
+  ],
+  "latest_pulse_seen": 2024043,
+  "latest_pulse_timestamp": "2026-11-12T04:25:00.000Z",
+  "latest_pulse_value_prefix": "0E7B4D97B58FEBB4D9B6828FD1539925",
+  "committed_utc": "2026-11-12T04:26:20Z",
+  "sha256": "3833d0185fa89c310de49dd3b7008c7dd31b2e8fd576171bf2d6bcc61a3da45a"
+}

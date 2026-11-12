@@ -273,3 +273,76 @@ Once the files are available, each claim gets checked against these failure mode
 - O. Oreshkov, F. Costa, Č. Brukner, Nat. Commun. **3**, 1092 (2012); Ä. Baumeler, S. Wolf, NJP **18**, 013036 (2016); Ä. Baumeler, F. Costa, T. Ralph, S. Wolf, M. Zych, CQG **36**, 224002 (2019); G. Tobar, F. Costa, CQG **37**, 205011 (2020); J. Wechs, C. Branciard, O. Oreshkov, Nat. Commun. **14**, 1471 (2023).
 - M. Morris, K. Thorne, U. Yurtsever, PRL **61**, 1446 (1988); S. Hawking, PRD **46**, 603 (1992); B. Kay, M. Radzikowski, R. Wald, CMP **183**, 533 (1997).
 - M. Leifer, M. Pusey, *Is a time symmetric interpretation of quantum theory possible without retrocausality?*, Proc. R. Soc. A **473**, 20160607 (2017).
+
+---
+
+## 11. Phase 2: the CHRONOS-2036 objective, assessed directly
+
+### 11.1 Answers to the four questions
+
+**Q1. Can information travel backward without matter travelling backward?**
+- Information always rides on some physical degree of freedom. That carrier can be a photon, a field mode, or a single qubit, so no person or computer needs to travel.
+- *Where* the carrier goes is what matters. The §2 Trilemma applies whatever the carrier is: under L+B+O, no carrier of any kind delivers a later choice to an earlier record.
+- In the D-CTC model (E4) the 1-bit message is carried by **one qubit** on the closed curve. So "information without matter" reduces to "a single quantum system on a CTC". The bottleneck is the geometry, not the payload.
+
+**Q2. Can quantum mechanics provide a mechanism?**
+- Time-symmetric and retrocausal interpretations (ABL/TSVF; Price; Wharton; Sutherland; Leifer & Pusey 2017) can contain backward *influence*. But they reproduce standard QM predictions, so they inherit standard no-signalling.
+- This is **retrocausality without signalling**, and E7 makes it visible. Individual Bohm trajectories in Bob's past light cone move when Alice acts (mean displacement 1.14), while Bob's statistics do not change (0.33σ).
+- A *usable* message needs a departure from L or B (E5–E7) or from O (E3, E4, E8). Pure reinterpretation provides none.
+
+**Q3. Can spacetime itself provide a pathway?**
+- GR has CTC solutions: Gödel, van Stockum/Tipler, Kerr interior, and Morris–Thorne–Yurtsever wormhole time machines. The traversable ones need matter violating the averaged null energy condition, which is further constrained by Ford–Roman quantum inequalities. They also face chronology-protection arguments (Hawking 1992; Kay–Radzikowski–Wald 1997). These arguments are suggestive, not proven.
+- **There is a decisive constraint on your scenario itself.** A wormhole or CTC time machine can only reach back to the moment the machine first existed: the earliest point on its chronology horizon (Morris, Thorne & Yurtsever 1988; Thorne's "you can't go back before the machine was built").
+  - So a 2036 → 2026 message requires **a working CTC mouth to exist by November 2026**.
+  - No mechanism invented in 2030–2036 can deliver a message to 2026 through spacetime geometry.
+  - That makes "has anyone received it?" testable today, and E12 is designed for exactly that.
+
+**Q4. Can an AI discover an undiscovered mechanism?**
+- The search space is now sharply defined. Any new mechanism must violate L (in a *branch-sensitive* way, per E5), violate B, or violate O for *localised* agents. It must also stay paradox-free; BW-type consistency (E8) is the only known template.
+- My best candidate structure is H★ (§7): a Lorentz-covariant Born or branch deviation restricted to logically consistent processes. I make **no claim** that it exists. It does tell you where to look and what bound to beat: about 3×10⁻¹⁰ bit per trial (E6).
+
+### 11.2 The Chronos Verification Protocol (CVP), `chronos/protocol.py`
+
+Your success criterion says the receiver must verify that the message *was generated in 2036, rather than predicted, planted or reconstructed*. CVP makes that mechanical:
+
+1. **Origin.** The message is a deterministic function of a *public, signed randomness-beacon value that does not exist yet*: NIST Randomness Beacon 2.0 as primary, drand quicknet as fallback. It cannot be predicted or planted. Getting it right *before* it exists is the signature of backward transmission.
+2. **Commitment.** Before the target pulse exists, the receiver publishes its decoded message, the SHA-256 of the record, and the latest pulse it had seen. Pushing to GitHub adds an independent timestamp.
+3. **No post-commit information.** Decoding may not use data produced after the commitment, such as a postselection herald. Results that do are scored separately and **disqualified** from Level 5.
+4. **Fixed statistics.** The number of trials is fixed in advance. An exact 5-digit match occurs by chance with p = 10⁻⁵.
+
+### 11.3 E11: a live Level-5 attempt against genuinely future data
+
+`experiments/e11_live_beacon_level5.py` ran the strongest no-new-physics candidate, the P-CTC channel (one per message bit), in **Cirq** (Google's quantum SDK). The noise model uses approximate Willow-class error rates. The target was real NIST pulses two minutes in the future. Results are in `ledger/e11_live_*.json`:
+
+- **Pre-registered:** 12 trials × 17 bits = 204 bits. Plan hash `25def180…`, registered at pulse 2,024,041. Targets were pulses 2,024,043 to 2,024,055, from 2026-11-12 04:25 to 04:37 UTC.
+- Every commitment hash verified, and every target pulse post-dated its commitment.
+- **Exact message matches: 0 of 12.** The chance expectation is 1.2×10⁻⁴.
+  - Example: trial 0 committed `23549`; the future message turned out to be `CHRONOS-2026-79774`.
+- **Level-5 (unconditional) bit accuracy: 97/204 = 0.475**, p = 0.78 for accuracy ≥ observed. This is consistent with chance and shows **no backward signal**.
+- **Disqualified herald-conditional accuracy: 45/46 = 0.978.** The herald rate was 0.225, and the single error is gate and readout noise.
+  - This is the "retrocausal-looking" result that a careless analysis would report as success.
+  - The herald was produced 2–3 minutes *after* the commitment, so CVP rule 3 excludes it.
+  - It also sits within the budget theorem: log₂(1/0.225) = 2.15 bits available per bit, of which at most 1 was used.
+
+- **Hardware note.** Real superconducting qubits stay coherent for about 100 µs, not minutes. On hardware, the "future" message must therefore come from an in-circuit quantum coin measured after R; `run_on_engine()` does this. The two-minute version needs the simulator to hold the quantum memory. Physically, this changes nothing: §2 applies at every timescale.
+- **Google hardware access.** Your Gmail contains no Google Quantum AI or Quantum Engine access, and this environment has no Google Cloud credentials. Google's processors are available only to approved partners. If you obtain access, `run_on_engine(project_id, processor_id)` is the entry point. The IBM-ready circuits in `hardware/*.qasm` are another route.
+
+### 11.4 E12: the CHRONOS-2036 experiment, pre-registered today
+
+`ledger/CHRONOS-2036_commit_*.json` is a receiver record made on **2026-11-12** and pushed to GitHub. It names the message it "received" from 2036-11-11.
+- The true message will be `CHRONOS-2036-NNNNN`, from the NIST beacon pulse at 2036-11-11T00:00:00Z. The fallback is drand quicknet round 139,057,012. I checked the round formula against the live chain.
+- `python experiments/e12_chronos_2036.py verify` scores every commitment once that date passes.
+- Anyone who builds a new receiver mechanism can add their own commitment with `... commit "<mechanism>"`.
+- **Prediction under standard physics:** no match. The chance of a hit is about 10⁻⁵ per commitment. The 17-bit encoding wraps modulo 100000, so values below 31072 are twice as likely; this is noted, and harmless to the conclusion.
+- This is a real Level-5 experiment, with a 10-year baseline and almost no cost. A null result is informative: by Q3, it also tests whether *any* time machine reaching November 2026 existed.
+
+### 11.5 Scorecard against your six levels
+
+| Level | Status | Evidence |
+|---|---|---|
+| 1. Simulate hypothetical backward communication | **Achieved** | E3 (P-CTC), E4 (D-CTC, 1 bit per use), E8, E11 |
+| 2. Demonstrate mathematical consistency | **Achieved within models** | D-CTC message circuit has a unique fixed point; 744 consistent processes, 64 of them non-causal. Caveat: the D-CTC mixture ambiguity (0.25) |
+| 3. Physically plausible mechanism | **Not achieved** | Every candidate needs a CTC (with exotic matter) or new physics bounded by experiment (E5, E6) |
+| 4. Unusual temporal correlations | **Conditional correlations reproduced. No *anomalous* (unconditional) correlation** | E1, E9, E10, E11 (herald-conditional only, budget-bounded) |
+| 5. Controllable message into the past | **Tested live: null** | E11 (unconditional accuracy at chance); E12 pending until 2036 |
+| 6. Independent reproduction | **Enabled** | CVP plus a public ledger: anyone can rerun E11 or add E12 commitments |

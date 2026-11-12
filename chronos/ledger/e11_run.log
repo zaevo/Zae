@@ -1,0 +1,29 @@
+[commit] trial 0 guess 23549 for pulse 2024043
+[commit] trial 1 guess 29795 for pulse 2024044
+[commit] trial 2 guess 29513 for pulse 2024045
+[commit] trial 3 guess 61417 for pulse 2024046
+[commit] trial 4 guess 05875 for pulse 2024047
+[commit] trial 5 guess 00972 for pulse 2024048
+[commit] trial 6 guess 25055 for pulse 2024049
+[commit] trial 7 guess 03924 for pulse 2024051
+[commit] trial 8 guess 71975 for pulse 2024052
+[commit] trial 9 guess 09306 for pulse 2024053
+[commit] trial 10 guess 25438 for pulse 2024054
+[commit] trial 11 guess 25407 for pulse 2024055
+{
+  "plan": {
+    "protocol": "CVP v1",
+    "K": 12,
+    "lead_pulses": 2,
+    "registered_at_pulse": 2024041,
+    "mechanism": "P-CTC per bit, Cirq Willow-like noise"
+  },
+  "plan_sha256": "25def18053298052fde0a126a46ef9b73717b5620e2eaad6fb78193c650cfdfd",
+  "exact_message_matches": 0,
+  "expected_exact_matches_by_chance": 0.00012000000000000002,
+  "LEVEL5_unconditional_bit_accuracy": 0.47549019607843135,
+  "LEVEL5_p_value (X>=U)": 0.7793571203760363,
+  "DISQUALIFIED_herald_conditional_accuracy": 0.9782608695652174,
+  "herald_rate": 0.22549019607843138,
+  "postselection_budget_bits_per_bit": 2.1488633859144826
+}

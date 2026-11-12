@@ -60,3 +60,11 @@ def test_weak_values_no_unconditional_info():
     assert r["I(m ; pointer | postselected) bits"] <= r["budget log2(1/P(postselect))"]
     a = r["m0_anomalous"]
     assert abs(a["simulated conditional shift"] - a["predicted shift g*A_w"]) < 0.02
+
+
+def test_protocol_offline():
+    from chronos import protocol as P
+    rec = {"a": 1, "b": [0, 1]}
+    assert P.commit(rec) == P.commit(dict(reversed(list(rec.items()))))
+    assert P.from_bits(P.to_bits(84721)) == 84721
+    assert abs(P.binom_sf(0, 10) - 1) < 1e-12 and abs(P.binom_sf(10, 10) - 2 ** -10) < 1e-15

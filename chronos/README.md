@@ -23,3 +23,9 @@ python -m pytest -q tests    # regression tests for the report's claims
 | `experiments/e08_causal_loops.py` | Enumeration of all 3-party classical processes; Baumeler–Wolf causal-game violation |
 | `experiments/e09_weak_values.py` | Weak values with a delayed postselection choice |
 | `experiments/e10_hardware_circuits.py` | Qiskit circuits under a noise model; OpenQASM exported to `hardware/` |
+| `chronos/protocol.py` | Chronos Verification Protocol: beacon-derived future messages, commitments, statistics |
+| `experiments/e11_live_beacon_level5.py` | LIVE Level-5 attempt in Cirq against NIST beacon pulses generated after commitment (`python experiments/e11_live_beacon_level5.py 12`) |
+| `experiments/e12_chronos_2036.py` | The CHRONOS-2036 experiment: `commit` now, `verify` on/after 2036-11-11 |
+| `ledger/` | Public commitments and live-run results; git history is the timestamp |
+
+Extra dependency for E11/E12: `pip install cirq-core` (and `cirq-google` for real Google hardware).
