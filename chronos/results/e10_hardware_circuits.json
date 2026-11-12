@@ -1,0 +1,37 @@
+{
+  "A_pctc_message_noisy": {
+    "m=0": {
+      "P(R=1) unconditional": 0.499225,
+      "P(R=1 | herald)": 0.05005495054450994,
+      "P(herald)": 0.250225
+    },
+    "m=1": {
+      "P(R=1) unconditional": 0.493875,
+      "P(R=1 | herald)": 0.9428339752685992,
+      "P(herald)": 0.24665
+    },
+    "I(m;R) unconditional (bits, plug-in)": 2.06478509663377e-05,
+    "I(m;R | herald) (bits)": 0.6986132585166742
+  },
+  "B_delayed_choice_noisy": {
+    "shots": 200000,
+    "P(s=0|coin=0)": 0.49818043669519313,
+    "P(s=0|coin=1)": 0.5003200768184364,
+    "retro bias estimate": -0.002139640123243247,
+    "95% upper bound on |retro bias|": 0.006522318529442565,
+    "implied capacity upper bound (bits/trial)": 7.67174130392099e-06,
+    "conditional correlations": {
+      "coin=0 (Z, which-path)": {
+        "I(S;I) bits": 0.00041890477479356036
+      },
+      "coin=1 (X, eraser)": {
+        "I(S;I) bits": 0.6717909660152375
+      }
+    }
+  },
+  "qasm_files": [
+    "delayed_choice.qasm",
+    "pctc_message_m0.qasm",
+    "pctc_message_m1.qasm"
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "stress_test": {
+    "trials": 300,
+    "messages_per_trial": 4,
+    "max_trace_distance_between_past_marginals": 8.049116928532385e-16,
+    "max_capacity_bits": 4.464081435562242e-16
+  },
+  "delayed_choice_eraser": {
+    "Z_whichpath": {
+      "P(s)": [
+        0.49999999999999983,
+        0.49999999999999983
+      ],
+      "P(s|i=0)": [
+        0.5,
+        0.5
+      ],
+      "P(s|i=1)": [
+        0.5,
+        0.5
+      ],
+      "I(S;I|b) bits": 0.0
+    },
+    "X_eraser": {
+      "P(s)": [
+        0.49999999999999967,
+        0.49999999999999967
+      ],
+      "P(s|i=0)": [
+        1.0,
+        0.0
+      ],
+      "P(s|i=1)": [
+        0.0,
+        1.0
+      ],
+      "I(S;I|b) bits": 1.0
+    },
+    "capacity_b_to_s_unconditional_bits": 6.021708191045449e-32
+  }
+}

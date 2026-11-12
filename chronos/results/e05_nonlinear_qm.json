@@ -1,0 +1,119 @@
+{
+  "table": [
+    {
+      "eps*t": 0.0,
+      "branch": {
+        "<sy>|Alice=Z": 0.0,
+        "<sy>|Alice=X": 0.0,
+        "capacity_bits_per_trial": 0.0
+      },
+      "reduced": {
+        "<sy>|Alice=Z": 0.0,
+        "<sy>|Alice=X": 0.0,
+        "capacity_bits_per_trial": 0.0
+      }
+    },
+    {
+      "eps*t": 0.001,
+      "branch": {
+        "<sy>|Alice=Z": -0.001999997338333413,
+        "<sy>|Alice=X": 0.0,
+        "capacity_bits_per_trial": 7.213464419475262e-07
+      },
+      "reduced": {
+        "<sy>|Alice=Z": 0.0,
+        "<sy>|Alice=X": 0.0,
+        "capacity_bits_per_trial": 0.0
+      }
+    },
+    {
+      "eps*t": 0.01,
+      "branch": {
+        "<sy>|Alice=Z": -0.01999733875343689,
+        "<sy>|Alice=X": 0.0,
+        "capacity_bits_per_trial": 7.212396924454611e-05
+      },
+      "reduced": {
+        "<sy>|Alice=Z": 0.0,
+        "<sy>|Alice=X": 0.0,
+        "capacity_bits_per_trial": 0.0
+      }
+    },
+    {
+      "eps*t": 0.1,
+      "branch": {
+        "<sy>|Alice=Z": -0.19738009007382473,
+        "<sy>|Alice=X": 0.0,
+        "capacity_bits_per_trial": 0.00710704463799213
+      },
+      "reduced": {
+        "<sy>|Alice=Z": 0.0,
+        "<sy>|Alice=X": 0.0,
+        "capacity_bits_per_trial": 0.0
+      }
+    },
+    {
+      "eps*t": 0.3,
+      "branch": {
+        "<sy>|Alice=Z": -0.537140332420953,
+        "<sy>|Alice=X": 0.0,
+        "capacity_bits_per_trial": 0.057119306927680455
+      },
+      "reduced": {
+        "<sy>|Alice=Z": 0.0,
+        "<sy>|Alice=X": 0.0,
+        "capacity_bits_per_trial": 0.0
+      }
+    },
+    {
+      "eps*t": 0.785398,
+      "branch": {
+        "<sy>|Alice=Z": -0.9174391733077677,
+        "<sy>|Alice=X": 0.0,
+        "capacity_bits_per_trial": 0.22123139328332334
+      },
+      "reduced": {
+        "<sy>|Alice=Z": 0.0,
+        "<sy>|Alice=X": 0.0,
+        "capacity_bits_per_trial": 0.0
+      }
+    },
+    {
+      "eps*t": 1.570796,
+      "branch": {
+        "<sy>|Alice=Z": -0.996343318041704,
+        "<sy>|Alice=X": 0.0,
+        "capacity_bits_per_trial": 0.3125836764026873
+      },
+      "reduced": {
+        "<sy>|Alice=Z": 0.0,
+        "<sy>|Alice=X": 0.0,
+        "capacity_bits_per_trial": 0.0
+      }
+    }
+  ],
+  "branch_capacity_scaling_exponent (C ~ (eps t)^k)": 1.9999981870865173,
+  "experimental_bound_note": "Bollinger et al. PRL 63, 1058 (1989): Weinberg nonlinearity < ~4e-27 of the 9Be+ binding energy per nucleon.",
+  "tachyonic_antitelephone": [
+    {
+      "u/c": 2.0,
+      "v/c": 0.3,
+      "reply_arrives_at_t (sent at t=0)": 0.7352941176470587
+    },
+    {
+      "u/c": 2.0,
+      "v/c": 0.6,
+      "reply_arrives_at_t (sent at t=0)": 0.3571428571428572
+    },
+    {
+      "u/c": 10.0,
+      "v/c": 0.5,
+      "reply_arrives_at_t (sent at t=0)": -0.3210526315789474
+    },
+    {
+      "u/c": 1000000.0,
+      "v/c": 0.2,
+      "reply_arrives_at_t (sent at t=0)": -0.19999803999980806
+    }
+  ]
+}

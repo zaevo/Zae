@@ -1,0 +1,65 @@
+{
+  "message_to_past": {
+    "m=0": {
+      "P(A) in the past": [
+        1.0,
+        0.0
+      ],
+      "fixed-space dim": 1
+    },
+    "m=1": {
+      "P(A) in the past": [
+        0.0,
+        1.0
+      ],
+      "fixed-space dim": 1
+    },
+    "m=|+>: rho_A": [
+      [
+        0.5,
+        0.0
+      ],
+      [
+        0.0,
+        0.5
+      ]
+    ],
+    "capacity_unconditional_bits": 1.0
+  },
+  "grandfather": {
+    "fixed-space dimension (1 => unique)": 2,
+    "Deutsch max-entropy tau": [
+      [
+        0.5,
+        0.0
+      ],
+      [
+        0.0,
+        0.5
+      ]
+    ]
+  },
+  "bhw_discrimination": {
+    "found": true,
+    "P(correct | psi_k) for |0>,|1>,|+>,|->": [
+      1.0,
+      1.0,
+      0.9999999999999997,
+      1.0000000000000009
+    ],
+    "standard-QM optimum (pretty-good = Helstrom here)": 0.5,
+    "linearity_defect_trace_distance": 0.2519760693307378,
+    "output_on_mixture_diag": [
+      0.375,
+      0.125,
+      0.375,
+      0.125
+    ],
+    "mixture_of_outputs_diag": [
+      0.5,
+      0.0,
+      0.5,
+      0.0
+    ]
+  }
+}

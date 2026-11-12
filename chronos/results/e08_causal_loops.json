@@ -1,0 +1,36 @@
+{
+  "processes_enumerated": 4096,
+  "logically_consistent": 744,
+  "consistent_and_NON_causal": 64,
+  "BW_process_consistent": true,
+  "BW_process_causal": false,
+  "BW_signalling_graph": [
+    [
+      0,
+      1
+    ],
+    [
+      0,
+      2
+    ],
+    [
+      1,
+      0
+    ],
+    [
+      1,
+      2
+    ],
+    [
+      2,
+      0
+    ],
+    [
+      2,
+      1
+    ]
+  ],
+  "game_value_BW": 1.0,
+  "game_value_max_over_sampled_causal": 0.75,
+  "game_value_max_over_noncausal": 1.0
+}

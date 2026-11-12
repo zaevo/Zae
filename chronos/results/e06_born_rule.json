@@ -1,0 +1,51 @@
+{
+  "table": [
+    {
+      "delta": 0.0,
+      "max|kappa|": 1.4931130339809301e-15,
+      "max_signal_capacity_bits": 2.460654934033971e-16
+    },
+    {
+      "delta": 0.0001,
+      "max|kappa|": 6.931111483909268e-05,
+      "max_signal_capacity_bits": 1.609828096683501e-10
+    },
+    {
+      "delta": 0.001,
+      "max|kappa|": 0.000692787021097929,
+      "max_signal_capacity_bits": 1.6101167649569493e-08
+    },
+    {
+      "delta": 0.01,
+      "max|kappa|": 0.0068956173206952825,
+      "max_signal_capacity_bits": 1.6129820582878053e-06
+    },
+    {
+      "delta": 0.05,
+      "max|kappa|": 0.03377850835394283,
+      "max_signal_capacity_bits": 4.063133652848906e-05
+    },
+    {
+      "delta": 0.1,
+      "max|kappa|": 0.06588312118099514,
+      "max_signal_capacity_bits": 0.0001639565483424233
+    },
+    {
+      "delta": 0.3,
+      "max|kappa|": 0.17974894919877155,
+      "max_signal_capacity_bits": 0.0015178544755972997
+    }
+  ],
+  "fit kappa ~ a*delta^k": {
+    "k": 0.9861348872934654,
+    "a": 0.6266200414075102
+  },
+  "fit C ~ b*delta^k": {
+    "k": 2.004574686816522,
+    "b": 0.01664686396575939
+  },
+  "assumed |kappa| bound": 0.0001,
+  "implied |delta| bound": 0.00014112684169841907,
+  "implied max signalling capacity bits/trial": 3.183738179091168e-10,
+  "trials needed for 1 bit": 3140961799.4575815
+}

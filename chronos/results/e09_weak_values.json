@@ -1,0 +1,20 @@
+{
+  "m0_anomalous": {
+    "P(postselect)": 0.001624066268357185,
+    "weak value Re A_w": -24.98666524422771,
+    "predicted shift g*A_w": -0.2498666524422771,
+    "simulated conditional shift": -0.24603273747569857,
+    "unconditional mean pointer": 0.0
+  },
+  "m1_trivial": {
+    "P(postselect)": 0.9999750006249896,
+    "weak value Re A_w": -2.2371143170757388e-17,
+    "predicted shift g*A_w": -2.237114317075739e-19,
+    "simulated conditional shift": 5.669452519305776e-17,
+    "unconditional mean pointer": 0.0
+  },
+  "I(m ; pointer) unconditional bits": 8.881784197001252e-16,
+  "I(m ; pointer | postselected) bits": 6.975828123767513e-05,
+  "budget log2(1/P(postselect))": 0.9976948766553378,
+  "note": "unconditional pointer is identical for both future choices; amplification lives only in the rare post-selected subensemble"
+}

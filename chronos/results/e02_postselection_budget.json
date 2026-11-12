@@ -1,0 +1,33 @@
+{
+  "random_instances_max_ratio_I_over_log1p": 0.619874646027293,
+  "adversarial_search_max_ratio": 0.9985624546301687,
+  "tight_family": [
+    {
+      "bits": 1,
+      "I(M;R|S)": 1.0,
+      "log2(1/p)": 1.0
+    },
+    {
+      "bits": 2,
+      "I(M;R|S)": 2.0,
+      "log2(1/p)": 2.0
+    },
+    {
+      "bits": 3,
+      "I(M;R|S)": 3.0,
+      "log2(1/p)": 3.0
+    },
+    {
+      "bits": 4,
+      "I(M;R|S)": 4.0,
+      "log2(1/p)": 4.0
+    },
+    {
+      "bits": 6,
+      "I(M;R|S)": 6.0,
+      "log2(1/p)": 6.0
+    }
+  ],
+  "max_throughput_bits_per_trial_p_log1p": 0.530737845423043,
+  "interpretation": "ratio <= 1 always; equality reached. Throughput to an observer who knows the herald is at most 0.531 bit/trial, and 0 to anyone who does not."
+}

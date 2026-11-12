@@ -1,0 +1,22 @@
+{
+  "equilibrium": {
+    "mean_x2 | Alice free": 0.000248031022876809,
+    "mean_x2 | Alice trap": -0.022677860896417434,
+    "var_x2 | Alice free": 6.413000073500059,
+    "var_x2 | Alice trap": 6.374585062171817,
+    "mean |per-trajectory displacement of x2 caused by Alice|": 1.1360753440587472,
+    "TV distance of Bob's histograms": 0.034279144538231845,
+    "z-score of variance change (|dVar| / std.err)": 0.3290811834769321
+  },
+  "born_marginal_TV_between_choices (exact)": 4.270591825571656e-15,
+  "non_equilibrium": {
+    "mean_x2 | Alice free": 0.029683444867315917,
+    "mean_x2 | Alice trap": 0.022300079813654207,
+    "var_x2 | Alice free": 11.845268278115007,
+    "var_x2 | Alice trap": 7.789198079096269,
+    "mean |per-trajectory displacement of x2 caused by Alice|": 0.5992399491664369,
+    "TV distance of Bob's histograms": 0.0885340176057593,
+    "z-score of variance change (|dVar| / std.err)": 22.62960553558503
+  },
+  "TV noise floor (independent samples, same dist)": 0.02483333333333334
+}
